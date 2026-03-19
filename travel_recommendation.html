@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelBloom</title>
+    <!-- FontAwesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reset et styles globaux */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            /* Image de fond (New York) similaire à l'exemple */
+            background-image: url('https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* En-tête (Header) */
+        header {
+            background-color: #11222C;
+            padding: 15px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 28px;
+            font-weight: bold;
+            font-style: italic;
+            gap: 10px;
+        }
+        .logo i {
+            font-size: 32px;
+        }
+        nav {
+            display: flex;
+            gap: 30px;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        .header-right {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .search-container {
+            display: flex;
+            align-items: center;
+            background: white;
+            border-radius: 20px;
+            padding: 5px 15px;
+            gap: 10px;
+            width: 300px;
+        }
+        .search-container input {
+            border: none;
+            outline: none;
+            padding: 5px;
+            width: 100%;
+            color: #333;
+        }
+        .search-container i {
+            color: #666;
+            cursor: pointer;
+        }
+        .btn {
+            background-color: #0d7e6a;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background-color: #0a6353;
+        }
+
+        /* Barre latérale (Sidebar) avec réseaux sociaux */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+            z-index: 50;
+        }
+        .sidebar a {
+            color: white;
+            font-size: 20px;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .sidebar a:hover {
+            color: #0d7e6a;
+        }
+
+        /* Contenu principal */
+        main {
+            flex: 1;
+            padding: 80px 120px;
+            position: relative;
+        }
+        section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        section.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* --- Section Accueil (Home) --- */
+        #home {
+            max-width: 700px;
+            margin-top: 20px;
+        }
+        #home h1 {
+            font-size: 64px;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.7);
+        }
+        #home p {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+            background: rgba(0,0,0,0.4);
+            padding: 15px;
+            border-radius: 5px;
+        }
+        #home .btn {
+            border-radius: 5px;
+            padding: 12px 30px;
+            font-size: 16px;
+            background-color: #0d4a3e;
+        }
+        #home .btn:hover {
+            background-color: #0a382f;
+        }
+
+        /* --- Section Contact --- */
+        #contact {
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+        #contact.active {
+            display: flex;
+        }
+        .contact-text h1 {
+            font-size: 72px;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.7);
+            margin-bottom: 10px;
+        }
+        .contact-text p {
+            font-size: 24px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+        }
+        .contact-form {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 40px;
+            border-radius: 5px;
+            width: 450px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.5);
+            border-radius: 5px;
+            color: white;
+            outline: none;
+        }
+        .form-group input::placeholder, .form-group textarea::placeholder {
+            color: #ddd;
+        }
+        .contact-form .btn {
+            width: 100%;
+            border-radius: 5px;
+            padding: 12px;
+            font-size: 16px;
+        }
+
+        /* --- Section À propos (About Us) --- */
+        #about {
+            margin-top: 0;
+        }
+        #about h1 {
+            font-size: 64px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.7);
+        }
+        .about-text {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 30px;
+            border-radius: 5px;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            border: 1px solid rgba(255,255,255,0.2);
+            font-size: 16px;
+        }
+        .about-text p {
+            margin-bottom: 15px;
+        }
+        .about-text p:last-child {
+            margin-bottom: 0;
+        }
+        .team-section {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 40px;
+            border-radius: 5px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .team-section h2 {
+            font-size: 56px;
+            line-height: 1.1;
+            width: 180px;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.7);
+        }
+        .team-members {
+            display: flex;
+            gap: 40px;
+            flex: 1;
+            justify-content: space-around;
+        }
+        .member {
+            text-align: center;
+            max-width: 220px;
+        }
+        .member i {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+        .member h3 {
+            margin-bottom: 10px;
+            font-size: 22px;
+        }
+        .member p {
+            font-size: 14px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .member .role-btn {
+            background-color: #1A5F7A;
+            color: white;
+            border: none;
+            padding: 8px 25px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        /* Grille des résultats */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            color: #333;
+            transition: transform 0.3s;
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .result-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .result-card .card-content {
+            padding: 15px;
+        }
+
+        .result-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            color: #0d4a3e;
+        }
+
+        .result-card p {
+            font-size: 0.9rem;
+            line-height: 1.4;
+            color: #555;
+        }
+
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 30px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 10px;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .result-card p strong {
+            color: #0d4a3e;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <i class="fas fa-globe-americas"></i>
+            <span>TravelBloom</span>
+        </div>
+        <nav>
+            <a onclick="showSection('home')">Home</a>
+            <a onclick="showSection('about')">About Us</a>
+            <a onclick="showSection('contact')">Contact Us</a>
+        </nav>
+        <div class="header-right" id="search-bar">
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Enter a destination or keyword">
+                <i class="fas fa-search"></i>
+            </div>
+            <button class="btn" id="search-btn">Search</button>
+            <button class="btn" id="clear-btn">Clear</button>
+        </div>
+    </header>
+
+    <!-- Sidebar Réseaux Sociaux -->
+    <div class="sidebar">
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-facebook-f"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-youtube"></i></a>
+    </div>
+
+    <!-- Contenu Principal -->
+    <main>
+        <!-- Section: Home -->
+        <section id="home" class="active">
+            <h1>EXPLORE DREAM<br>DESTINATION</h1>
+            <p>The Travel Recommendation App helps users explore popular travel destinations through an interactive and user-friendly interface. It allows users to search for beaches, temples, countries, or specific country names to view related cities along with images and descriptions. The app dynamically fetches data from a structured JSON file to display relevant results. It provides a simple and efficient way to discover and plan travel destinations.</p>
+            <button class="btn">Book Now</button>
+            <div id="results" class="results-grid"></div>
+        </section>
+        
+        <!-- Section: About Us -->
+        <section id="about">
+            <h1>ABOUT US</h1>
+            <div class="about-text">
+                <p>Welcome to Our Company! We are a team of passionate individuals dedicated to providing excellent services/products to our customers. Our mission is to provide the best experience for people traveling to different destinations around the world.</p>
+                <p>Our values include integrity, innovation, customer satisfaction, and teamwork. We believe in putting our customers first and working together to achieve our goals.</p>
+                <p>Feel free to explore our website to learn more about what we offer!</p>
+            </div>
+            <div class="team-section">
+                <h2>Our<br>Team</h2>
+                <div class="team-members">
+                    <div class="member">
+                        <i class="fas fa-user-circle"></i>
+                        <h3>John Doe</h3>
+                        <p>John is responsible for overall company strategy and vision.</p>
+                        <button class="role-btn">CEO</button>
+                    </div>
+                    <div class="member">
+                        <i class="fas fa-user-circle"></i>
+                        <h3>Celina Thomas</h3>
+                        <p>Celina leads the technical and operations team.</p>
+                        <button class="role-btn">Team Lead</button>
+                    </div>
+                    <div class="member">
+                        <i class="fas fa-user-circle"></i>
+                        <h3>Mike Tyson</h3>
+                        <p>Mike manages project delivery and client relationships.</p>
+                        <button class="role-btn">Delivery Head</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Contact Us -->
+        <section id="contact">
+            <div class="contact-text">
+                <h1>CONTACT US</h1>
+                <p>Get in touch</p>
+            </div>
+            <div class="contact-form">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" placeholder="Enter your name">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label>Message</label>
+                    <textarea rows="4" placeholder="Enter your message"></textarea>
+                </div>
+                <button class="btn">Submit</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Script for navigation -->
+    <script>
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('main section').forEach(sec => {
+                sec.classList.remove('active');
+            });
+            
+            // Display the targeted section
+            document.getElementById(sectionId).classList.add('active');
+
+            // Show or hide the search bar (only visible on Home)
+            const searchBar = document.getElementById('search-bar');
+            if (sectionId === 'home') {
+                searchBar.style.display = 'flex';
+            } else {
+                searchBar.style.display = 'none';
+            }
+        }
+    </script>
+    <script src="travel_recommendation.js"></script>
+</body>
+</html>
